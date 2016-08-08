@@ -28,7 +28,7 @@ def buildMatrix(matrixFile):
 				connectivityMat[connectivityX, connectivityY]=1
 
 	#outputs connectivity matrix in tab-delimited format
-	outputMatrix=open('final_connectivity_matrix.txt', 'w')
+	outputMatrix=open('final_connectivity_matrix_3.txt', 'w')
 	for i in range(0, sampleNum):
 		for n in range(0, sampleNum-1):
 			outputMatrix.write(str(connectivityMat[i][n])+'\t')
