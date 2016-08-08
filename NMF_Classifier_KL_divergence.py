@@ -66,6 +66,9 @@ if __name__=='__main__':
 	parser.add_argument('-input', required=True, dest='matrixFile', help='Full path to tab-delimited "matrix" file')
 	parser.add_argument('-kclusters', default='2', dest='kclusters', type=int, help='[INT] Number of subtypes or clusters to expect, must be smaller than m columns and n rows of input data')
 	parser.add_argument('-iterations', default='1000', dest='iterations', type=int, help='[INT] Number of iterations requried for convergence')
+	parser.add_argument('--noPlotOut', default=True, dest='makePlot', action='store_false', help='[BOOLEAN] True or False, output image files of costfunction optimization')
+	parser.add_argument('--colNames', default='noXLabels', dest='colNames', type=str, help='full path to file of sample names in order of matrix, one name per line')
+	parser.add_argument('--rowNames', default='noYLabels', dest='rowNames', type=str, help='full path to file of feature/attribute names in order of matrix, one name per line')
 	args=parser.parse_args()
 	
 
