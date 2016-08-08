@@ -10,7 +10,7 @@ def matrixInitialization(matrixFile, k):
 		for line in input:
 			line=line.rstrip('\n')
 			line=line.split('\t')
-			converted=[int(x) for x in line]
+			converted=[float(line[x]) for x in range(0, len(line))]
 			observed.append(converted)
 
 	observed=np.array(observed)
@@ -162,7 +162,7 @@ if __name__=='__main__':
 	runInfo.write('max_squared_Euclidean_Distance'+'\t'+str(np.max(qualityApprox))+'\n')	
 	
 	#outputs predicted W, H, and final predicted V, matrices in tab delimited format
-	matrixH=open('matrixH_final_clusterXcolumn.txt', 'w')
+	matrixH=open('matrixH_final_clusterXcolumn_3.txt', 'w')
 	for x in range(0, len(H)):
 		for z in range(0, len(H[0])-1):
 			matrixH.write(str(H[x][z])+'\t')
