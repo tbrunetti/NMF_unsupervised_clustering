@@ -55,7 +55,7 @@ def visualizeConvergenceAccuracy(qualityApprox, iterConverge):
 	plt.axis([0, max(iterConverge), 0, max(qualityApprox)+50])   
 	plt.ylabel('squared Euclidean Distance')
 	plt.xlabel('iterations')
-	plt.savefig(str(args.outPath)+'sqEucDist_over_all_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+	plt.savefig(str(args.outPath)+'EucDist_over_all_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 
 	#zoomed in plot of the first 10 iterations
 	plt.plot(iterConverge, qualityApprox)
@@ -63,7 +63,7 @@ def visualizeConvergenceAccuracy(qualityApprox, iterConverge):
 	plt.axis([0, 10, 0, max(qualityApprox)+50])
 	plt.ylabel('squared Euclidean Distance')
 	plt.xlabel('iterations')
-	plt.savefig(str(args.outPath)+'sqEucDist_over_first_10_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+	plt.savefig(str(args.outPath)+'EucDist_over_first_10_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 
 def matrix_visualization(W, H, yAxisNames, xAxisNames):
 	#construct heat map of matrix W
@@ -75,7 +75,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			cbar = plt.colorbar(heatmap)
 			plt.ylabel('genes')
 			plt.xlabel('gene expression profiles (k clusters)')
-			plt.savefig(str(args.outPath)+'matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(args.outPath)+'EucDist_matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 		#if row names were provided by user, heatmap is labeled
 		else:
 			rowNames=[]
@@ -90,7 +90,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			ax2.set_yticklabels(rowNames, minor=False)
 			plt.ylabel('genes')
 			plt.xlabel('gene expression profiles (k clusters)')
-			plt.savefig(str(args.outPath)+'matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(args.outPath)+'EucDist_matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 	
 	#construct heatmap fo matrix H
 	def matrix_H():
@@ -101,7 +101,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			cbar = plt.colorbar(heatmap)
 			plt.ylabel('gene expression profiles (k clusters)')
 			plt.xlabel('sample ID')
-			plt.savefig(str(args.outPath)+'matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(args.outPath)+'EucDist_matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 	#if column names were provided by user, heatmap is labeled
 		else:
 			colNames=[]
@@ -116,7 +116,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			ax3.set_xticklabels(colNames, minor=False)
 			plt.ylabel('gene expression profiles (k clusters)')
 			plt.xlabel('sample ID')
-			plt.savefig(str(args.outPath)+'matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(args.outPath)+'EucDist_matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 
 	matrix_W();
 	matrix_H();
@@ -141,7 +141,7 @@ if __name__=='__main__':
 	#stores the quantification values of the cost function
 	qualityApprox=[]
 	iterConverge=[]
-	predictionAccuracy=open(str(args.outPath)+'squared_euclidean_distance_at_each_iteration_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	predictionAccuracy=open(str(args.outPath)+'EucDist_at_each_iteration_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	for x in range(0, args.iterations):
 		W, H, predicted=updateRules(observed, W, H)
 		squaredEucDist=costFunction(observed, predicted)
@@ -149,13 +149,13 @@ if __name__=='__main__':
 		iterConverge.append(x)
 		#predictionAccuracy.write(str(x)+'\t'(squaredEucDist)+'\n')
 	
-	matrix_visualization(W, H, yAxisNames=args.rowNames, xAxisNames=args.colNames)
 
 	#output accuracy plots
 	if args.makePlot==True:
 		visualizeConvergenceAccuracy(qualityApprox, iterConverge);
+		matrix_visualization(W, H, yAxisNames=args.rowNames, xAxisNames=args.colNames);
 
-	runInfo=open(str(args.outPath)+'run_metrics_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	runInfo=open(str(args.outPath)+'EucDist_run_metrics_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	runInfo.write('number_of_iterations'+'\t'+str(args.iterations)+'\n')
 	runInfo.write('number_of_clusters'+'\t'+str(args.kclusters)+'\n')
 	runInfo.write('mean_squared_Euclidean_Distance'+'\t'+str(np.mean(qualityApprox))+'\n')
@@ -164,19 +164,19 @@ if __name__=='__main__':
 	runInfo.write('max_squared_Euclidean_Distance'+'\t'+str(np.max(qualityApprox))+'\n')	
 	
 	#outputs predicted W, H, and final predicted V, matrices in tab delimited format
-	matrixH=open(str(args.outPath)+'matrixH_final_clusterXcolumn_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	matrixH=open(str(args.outPath)+'EucDist_matrixH_final_clusterXcolumn_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	for x in range(0, len(H)):
 		for z in range(0, len(H[0])-1):
 			matrixH.write(str(H[x][z])+'\t')
 		matrixH.write(str(H[x][len(H[0])-1])+'\n')
 
-	matrixW=open(str(args.outPath)+'matrixW_final_rowXcluster_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	matrixW=open(str(args.outPath)+'EucDist_matrixW_final_rowXcluster_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	for x in range(0, len(W)):
 		for z in range(0, len(W[0])-1):
 			matrixW.write(str(W[x][z])+'\t')
 		matrixW.write(str(W[x][len(W[0])-1])+'\n')
 
-	predictedMatrix=open(str(args.outPath)+'predicted_matrix_final_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	predictedMatrix=open(str(args.outPath)+'EucDist_predicted_matrix_final_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	for x in range(0, len(predicted)):
 		for z in range(0, len(predicted[0])-1):
 			predictedMatrix.write(str(predicted[x][z])+'\t')
