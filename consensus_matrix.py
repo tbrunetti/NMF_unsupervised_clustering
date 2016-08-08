@@ -17,6 +17,7 @@ def readMatrices(inputFile):
 					oneMatrix.append(converted)
 				#stores the connectivity matrix for each run	
 				connectivityMatrices[filename]=np.array(oneMatrix)
+			#extracts clusters number
 			clusters=filename.split('=')[1][0]
 
 	dimOfConsensus=len(oneMatrix[0])
