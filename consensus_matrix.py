@@ -17,12 +17,13 @@ def readMatrices(inputFile):
 					oneMatrix.append(converted)
 				#stores the connectivity matrix for each run	
 				connectivityMatrices[filename]=np.array(oneMatrix)
-	
+			clusters=filename.split('=')[1][0]
+
 	dimOfConsensus=len(oneMatrix[0])
 	#creates consensus matrix of all zeroes
 	consensusMat=np.zeros((dimOfConsensus, dimOfConsensus), dtype=np.float)
 	
-	return connectivityMatrices, consensusMat		
+	return connectivityMatrices, consensusMat, clusters		
 
 def buildConsensus(connectivityMatrices, consensusMat):
 
@@ -36,14 +37,14 @@ def buildConsensus(connectivityMatrices, consensusMat):
 
 	return consensusMat
 
-def visualizeConsensus(consensusMat, colNames):
+def visualizeConsensus(consensusMat, connectivityMatrices, clusters, colNames):
 	if colNames=='noXLabels':
 		#put concensus matrix into dataframe to build hierarchical clustermap		
 		dataframe=pd.DataFrame(data=consensusMat)
 		#clusters by columns and rows and annotates probablility a particular sample clusters together
 		#cluster distance is meausred by average Euclidean Distance in seaborn for hierarchical clustering
-		concensusClustered=sns.clustermap(dataframe, col_cluster=True, row_cluster=True, annot=True)
-		sns.plt.show()
+		consensusClustered=sns.clustermap(dataframe, col_cluster=True, row_cluster=True, annot=True)
+		consensusClustered.savefig('consensus_Matrix_over_'+str(len(connectivityMatrices))+'_runs_at_k='+str(clusters)+'.png')
 	
 	else:
 		#assigns sample names to consensus matrix
@@ -55,8 +56,8 @@ def visualizeConsensus(consensusMat, colNames):
 		dataframe=pd.DataFrame(data=consensusMat, index=sampleNames, columns=sampleNames)
 		#clusters by columns and rows and annotates probablility a particular sample clusters together
 		#cluster distance is meausred by average Euclidean Distance in seaborn for hierarchical clustering
-		concensusClustered=sns.clustermap(dataframe, col_cluster=True, row_cluster=True, annot=True)
-		sns.plt.show()
+		consensusClustered=sns.clustermap(dataframe, col_cluster=True, row_cluster=True, annot=True)
+		consensusClustered.savefig('consensus_Matrix_over_'+str(len(connectivityMatrices))+'_runs_at_k='+str(clusters)+'.png')
 
 if __name__=='__main__':
 	parser=argparse.ArgumentParser(description='builds consensus matrix given set of connectivity matrices')
@@ -64,6 +65,6 @@ if __name__=='__main__':
 	parser.add_argument('-colNames', default='noXLabels', dest='colNames', type=str)
 	args=parser.parse_args()
 	
-	connectivityMatrices, consensusMat=readMatrices(inputFile=args.listOfMatrices);
+	connectivityMatrices, consensusMat, clusters=readMatrices(inputFile=args.listOfMatrices);
 	consensusMat=buildConsensus(connectivityMatrices, consensusMat)
-	visualizeConsensus(consensusMat, colNames=args.colNames)
+	visualizeConsensus(consensusMat, connectivityMatrices, clusters, colNames=args.colNames)
