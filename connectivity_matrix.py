@@ -29,7 +29,7 @@ def buildMatrix(matrixFile):
 				connectivityMat[connectivityX, connectivityY]=1
 
 	#outputs connectivity matrix in tab-delimited format
-	outputMatrix=open(str(args.outPath)+'final_connectivity_matrix'+str(args.matrixFile.split("/")[-1])+'.txt', 'w')
+	outputMatrix=open(str(matrixPath)+'final_connectivity_matrix'+str(args.matrixFile.split("/")[-1]), 'w')
 	for i in range(0, sampleNum):
 		for n in range(0, sampleNum-1):
 			outputMatrix.write(str(connectivityMat[i][n])+'\t')
@@ -44,7 +44,7 @@ def visualize_connectivity(connectivityMat, sampleName):
 		cbar = plt.colorbar(heatmap)
 		plt.ylabel('sample ID')
 		plt.xlabel('sample ID')
-		plt.savefig(str(args.outPath)+'final_connectivity_matrix'+str(args.matrixFile.split("/")[-1])+'.png')
+		plt.savefig(str(visPath)+'final_connectivity_matrix'+str(args.matrixFile.split("/")[-1])+'.png')
 	#if column names were provided by user, heatmap is labeled
 	else:
 		colNames=[]
@@ -60,14 +60,25 @@ def visualize_connectivity(connectivityMat, sampleName):
 		ax1.set_xticklabels(colNames, minor=False)
 		plt.ylabel('sample ID')
 		plt.xlabel('sample ID')
-		plt.savefig(str(args.outPath)+'final_connectivity_matrix'+str(args.matrixFile.split("/")[-1])+'.png')
+		plt.savefig(str(visPath)+'final_connectivity_matrix'+str(args.matrixFile.split("/")[-1])+'.png')
 
 if __name__=='__main__':
 	parser=argparse.ArgumentParser("parses information to build connectivity matrix")
 	parser.add_argument('-input', required=True, dest='matrixFile', help='Full path to tab-delimited "H matrix" file')
-	parser.add_argument('-colNames', default='noXLabels', dest='colNames', type=str, help='full path to file of sample names in order of matrix, one name per line')
+	parser.add_argument('--colNames', default='noXLabels', dest='colNames', type=str, help='full path to file of sample names in order of matrix, one name per line')
 	parser.add_argument('--output', default=os.getcwd(), dest='outPath', type=str, help='full path to output directory')
 	args=parser.parse_args()
+	
+	# path to output directories
+	visPath=str(args.outPath)+'connectivity_visualization/'
+	matrixPath=str(args.outPath)+'connectivity_matrix/'
+
+	#check if output directory is already made, if not creates it
+	if os.path.isdir(visPath) == False:
+		os.mkdir(visPath)
+	if os.path.isdir(matrixPath) == False:
+		os.mkdir(matrixPath)
+
 	#input is a file of predicted matrix H (kxm, k=clusters/metagene expression, m=samples)
 	connectivityMat=buildMatrix(matrixFile=args.matrixFile);
 	visualize_connectivity(connectivityMat=connectivityMat, sampleName=args.colNames);
