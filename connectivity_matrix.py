@@ -17,7 +17,8 @@ def buildMatrix(matrixFile):
 	inputH=np.array(inputH)
 	sampleNum=len(inputH[0])
 	connectivityMat=np.zeros((sampleNum, sampleNum), dtype=np.int)
-
+	matricesForConsensus.write('\n'+str(matrixPath)+'final_connectivity_matrix'+str(args.matrixFile.split("/")[-1]))
+	
 	#fills in connectivity matrix
 	for connectivityX in range(0, sampleNum):
 		for connectivityY in range(0, sampleNum):
@@ -69,6 +70,7 @@ if __name__=='__main__':
 	parser.add_argument('--output', default=os.getcwd(), dest='outPath', type=str, help='full path to output directory')
 	args=parser.parse_args()
 	
+	
 	# path to output directories
 	visPath=str(args.outPath)+'connectivity_visualization/'
 	matrixPath=str(args.outPath)+'connectivity_matrix/'
@@ -79,6 +81,12 @@ if __name__=='__main__':
 	if os.path.isdir(matrixPath) == False:
 		os.mkdir(matrixPath)
 
+	
+	#creates a list of paths to connectivity matrices for consensus matrix creation; used for run_NMF.sh
+	matricesForConsensus=open(str(matrixPath)+'paths_to_connectivity_matrices_to_analyze.txt', 'a')
+	if os.stat(str(matrixPath)+'paths_to_connectivity_matrices_to_analyze.txt').st_size == 0:
+		matricesForConsensus.write('Connectivity matrices contributing to consensus matrix')
+	
 	#input is a file of predicted matrix H (kxm, k=clusters/metagene expression, m=samples)
 	connectivityMat=buildMatrix(matrixFile=args.matrixFile);
 	visualize_connectivity(connectivityMat=connectivityMat, sampleName=args.colNames);
