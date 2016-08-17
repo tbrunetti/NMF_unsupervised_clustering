@@ -69,7 +69,7 @@ def visualizeConvergenceAccuracy(qualityApprox, iterConverge):
 	plt.axis([0, max(iterConverge), 0, max(qualityApprox)+50])   
 	plt.ylabel('Kullback-Leibler divergence')
 	plt.xlabel('iterations')
-	plt.savefig(str(args.outPath)+'KLdiv_over_all_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+	plt.savefig(str(visPath)+'KLdiv_over_all_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 
 	#zoomed in plot of the first 10 iterations
 	plt.plot(iterConverge, qualityApprox)
@@ -77,7 +77,7 @@ def visualizeConvergenceAccuracy(qualityApprox, iterConverge):
 	plt.axis([0, 10, 0, max(qualityApprox)+50])
 	plt.ylabel('Kullback-Leibler divergence')
 	plt.xlabel('iterations')
-	plt.savefig(str(args.outPath)+'KLdiv_over_first_10_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+	plt.savefig(str(visPath)+'KLdiv_over_first_10_iterations_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 
 def matrix_visualization(W, H, yAxisNames, xAxisNames):
 	#construct heat map of matrix W
@@ -89,7 +89,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			cbar = plt.colorbar(heatmap)
 			plt.ylabel('genes')
 			plt.xlabel('gene expression profiles (k clusters)')
-			plt.savefig(str(args.outPath)+'KLdiv_matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(visPath)+'KLdiv_matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 		#if row names were provided by user, heatmap is labeled
 		else:
 			rowNames=[]
@@ -104,7 +104,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			ax2.set_yticklabels(rowNames, minor=False)
 			plt.ylabel('genes')
 			plt.xlabel('gene expression profiles (k clusters)')
-			plt.savefig(str(args.outPath)+'KLdiv_matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(visPath)+'KLdiv_matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 	
 	#construct heatmap fo matrix H
 	def matrix_H():
@@ -115,7 +115,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			cbar = plt.colorbar(heatmap)
 			plt.ylabel('gene expression profiles (k clusters)')
 			plt.xlabel('sample ID')
-			plt.savefig(str(args.outPath)+'KLdiv_matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(visPath)+'KLdiv_matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 	#if column names were provided by user, heatmap is labeled
 		else:
 			colNames=[]
@@ -130,7 +130,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			ax3.set_xticklabels(colNames, minor=False)
 			plt.ylabel('gene expression profiles (k clusters)')
 			plt.xlabel('sample ID')
-			plt.savefig(str(args.outPath)+'KLdiv_matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+			plt.savefig(str(visPath)+'KLdiv_matrixH_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
 
 	matrix_W();
 	matrix_H();
@@ -149,6 +149,26 @@ if __name__=='__main__':
 	parser.add_argument('--output', default=os.getcwd(), dest='outPath', type=str, help='full path to output directory')
 	args=parser.parse_args()
 	
+	# creates paths to result output directories
+	wPath=str(args.outPath)+'matrixW/'
+	hPath=str(args.outPath)+'matrixH/'
+	vPath=str(args.outPath)+'matrixV/'
+	visPath=str(args.outPath)+'visualizations/'
+	statPath=str(args.outPath)+'statistics/'
+
+	# if output directory does not exist yet, create it
+	if os.path.isdir(wPath) == False:
+		os.mkdir(wPath)
+	if os.path.isdir(hPath) == False:
+		os.mkdir(hPath)
+	if os.path.isdir(vPath) == False:
+		os.mkdir(vPath)
+	if os.path.isdir(visPath) == False:
+		os.mkdir(visPath)
+	if os.path.isdir(statPath) == False:
+		os.mkdir(statPath)
+
+
 	uniqueName=strftime("%Y-%m-%d_%H:%M:%S", gmtime())
 	observed, predicted, k, nrows, mcols, W, H=matrixInitialization(inputMatrix=args.matrixFile, k=args.kclusters);
 	
@@ -167,7 +187,7 @@ if __name__=='__main__':
 		matrix_visualization(W, H, yAxisNames=args.rowNames, xAxisNames=args.colNames)
 	
 	#creates a file with run statistics
-	runInfo=open(str(args.outPath)+'KLdiv_run_metrics_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	runInfo=open(str(statPath)+'KLdiv_run_metrics_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	runInfo.write('number_of_iterations'+'\t'+str(args.iterations)+'\n')
 	runInfo.write('number_of_clusters'+'\t'+str(args.kclusters)+'\n')
 	runInfo.write('mean_Kullback-Leibler_divergence'+'\t'+str(np.mean(qualityApprox))+'\n')
@@ -177,19 +197,19 @@ if __name__=='__main__':
 
 	
 	#outputs predicted W, H, and final predicted V, matrices in tab delimited format
-	matrixH=open(str(args.outPath)+'KLdiv_matrixH_final_clusterXcolumn_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	matrixH=open(str(hPath)+'KLdiv_matrixH_final_clusterXcolumn_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	for x in range(0, len(H)):
 		for z in range(0, len(H[0])-1):
 			matrixH.write(str(H[x][z])+'\t')
 		matrixH.write(str(H[x][len(H[0])-1])+'\n')
 
-	matrixW=open(str(args.outPath)+'KLdiv_matrixW_final_rowXcluster_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	matrixW=open(str(wPath)+'KLdiv_matrixW_final_rowXcluster_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	for x in range(0, len(W)):
 		for z in range(0, len(W[0])-1):
 			matrixW.write(str(W[x][z])+'\t')
 		matrixW.write(str(W[x][len(W[0])-1])+'\n')
 
-	predictedMatrix=open(str(args.outPath)+'KLdiv_predicted_matrix_final_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
+	predictedMatrix=open(str(vPath)+'KLdiv_predicted_matrix_final_k='+str(args.kclusters)+'_'+str(uniqueName)+'.txt', 'w')
 	for x in range(0, len(predicted)):
 		for z in range(0, len(predicted[0])-1):
 			predictedMatrix.write(str(predicted[x][z])+'\t')
