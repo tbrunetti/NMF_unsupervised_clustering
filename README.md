@@ -16,4 +16,4 @@ Installation is not necessary, just clone the repository into a directory and it
 ```
 git clone https://github.com/tbrunetti/NMF_unsupervised_clustering.git
 ```
-If the user chooses to run the streamlined suite of modules, the run_NMF.sh should be configured with the location and specfication of the required variables located at the head of the file.  Otherwise, each individual module is equipped with argparse and the -h flag should denote to the user what arguments are required.
+If the user chooses to run the streamlined suite of modules, the run_NMF.sh should be configured with the location and specification of the required variables located at the head of the file.  Otherwise, each individual module is equipped with argparse and the -h flag should denote to the user what arguments are required.
