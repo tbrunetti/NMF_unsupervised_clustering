@@ -8,7 +8,7 @@ outputDirectory='/home/tonya/github_repositories/NMF_unsupervised_clustering/tes
 metric='KL'
 
 #the number of individual runs (i.e. number of times to perform NMF on the same input data)
-numRuns=10
+numRuns=100
 
 #pick 'connectivity' or 'k-means'
 clusterType='connectivity'
@@ -100,4 +100,43 @@ do
 	echo "Executing run number "$i
 	$metric;
 done
+
+
+
+
+
+
+
+connectivityParams=''
+#sets output directory for results
+if [[ -v outputDirectory ]]
+then
+        connectivityParams+=" --output "$outputDirectory
+else
+        echo "variable 'outputDirectory' is set to defaults of classifier"
+fi
+
+#sets sample names for matrix
+if [[ -v colNames ]]
+then
+        connectivityParams+=" --colNames "$colNames
+else
+        echo "variable 'colNames' is set to defaults of classifier"
+fi
+
+#run connectivity
+filesToRun=$outputDirectory'matrixH/*'
+echo $filesToRun
+for matrices in $filesToRun;
+do
+	echo "Building connectivity matrix for "$matrices
+	
+	python connectivity_matrix.py -input $matrices$connectivityParams
+done
+
+
+
+#run consensus matrix
+echo "Running consensus matrix..."
+python consensus_matrix.py -input $outputDirectory'connectivity_matrix/paths_to_connectivity_matrices_to_analyze.txt'$connectivityParams
 
