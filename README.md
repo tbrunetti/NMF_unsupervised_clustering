@@ -12,8 +12,16 @@ In order to run the entire suite of modules the following dependencies are requi
 
 #### Installation and Configuration
 ------------------------------------
-Installation is not necessary, just clone the repository into a directory and it is ready for use.
+Installation is not necessary, just clone the repository into a directory and it is ready for use.  The streamlined run_NMF.sh may need to be turned into an executable.
 ```
 git clone https://github.com/tbrunetti/NMF_unsupervised_clustering.git
+chmod a+x run_NMF.sh
 ```
-If the user chooses to run the streamlined suite of modules, the run_NMF.sh should be configured with the location and specification of the required variables located at the head of the file.  Otherwise, each individual module is equipped with argparse and the -h flag should denote to the user what arguments are required.
+If the user chooses to run the streamlined suite of modules, the run_NMF.sh should be configured with the location and specification of the required variables located at the head of the file.  Otherwise, each individual module is equipped with argparse and the -h flag should denote to the user which arguments are required. NOTE: When running the script, you must have access to user X session.
+
+
+#### Running run_NMF.sh
+------------------------
+
+#### Output Files
+------------------
