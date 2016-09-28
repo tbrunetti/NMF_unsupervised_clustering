@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 def readMatrices(inputFile):
 	#stores connectivity matrix for each run key=runID:value=connectivity matrix
@@ -61,7 +62,13 @@ def visualizeConsensus(consensusMat, connectivityMatrices, clusters, colNames):
 		#clusters by columns and rows and annotates probablility a particular sample clusters together
 		#cluster distance is meausred by average Euclidean Distance in seaborn for hierarchical clustering
 		consensusClustered=sns.clustermap(dataframe, col_cluster=True, row_cluster=True, annot=True)
+		consensusClustered_non_annt=sns.clustermap(dataframe, col_cluster=True, row_cluster=True, annot=False)
+		plt.setp(consensusClustered.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
+		plt.setp(consensusClustered_non_annt.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
+		plt.setp(consensusClustered.ax_heatmap.xaxis.get_majorticklabels(), rotation=90)
+		plt.setp(consensusClustered_non_annt.ax_heatmap.xaxis.get_majorticklabels(), rotation=90)
 		consensusClustered.savefig(str(matrixPath)+'consensus_Matrix_over_'+str(len(connectivityMatrices))+'_runs_at_k='+str(clusters)+'.png')
+		consensusClustered_non_annt.savefig(str(matrixPath)+'non_annotated_consensus_Matrix_over_'+str(len(connectivityMatrices))+'_runs_at_k='+str(clusters)+'.png')
 
 if __name__=='__main__':
 	parser=argparse.ArgumentParser(description='builds consensus matrix given set of connectivity matrices')
