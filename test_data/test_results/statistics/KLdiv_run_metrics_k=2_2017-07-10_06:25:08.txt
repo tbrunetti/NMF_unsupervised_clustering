@@ -1,0 +1,6 @@
+number_of_iterations	100
+number_of_clusters	2
+mean_Kullback-Leibler_divergence	17012819.0166
+std_Kullback-Leibler_divergence	1215801.05983
+min_Kullback-Leibler_divergence	16288770.3113
+max_Kullback-Leibler_divergence	21573464.8053
