@@ -1,4 +1,5 @@
 from time import gmtime, strftime
+from collections import Counter
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -90,6 +91,7 @@ def matrix_visualization(W, H, yAxisNames, xAxisNames):
 			plt.ylabel('genes')
 			plt.xlabel('gene expression profiles (k clusters)')
 			plt.savefig(str(visPath)+'KLdiv_matrixW_visualization_k='+str(args.kclusters)+'_'+str(uniqueName)+'.png')
+
 		#if row names were provided by user, heatmap is labeled
 		else:
 			rowNames=[]
@@ -214,3 +216,15 @@ if __name__=='__main__':
 		for z in range(0, len(predicted[0])-1):
 			predictedMatrix.write(str(predicted[x][z])+'\t')
 		predictedMatrix.write(str(predicted[x][len(predicted[0])-1])+'\n')
+
+	# TESTING metagene extractions
+	meta_profile = {}
+	genes = []
+	with open(args.rowNames) as indiv_genes:
+			for line in indiv_genes:
+				genes.append(line.rstrip())
+	for metagene in range(0, int(args.kclusters)):
+		genes_meta= dict(zip(genes, W[:,metagene]))
+		print "Expression profile for metagene: " + str(metagene)
+		for key, value in sorted(genes_meta.iteritems(), key=lambda (gene, expression): (expression, gene), reverse=True)[:20]:
+			print "%s: %s" % (key, value)
